@@ -12,9 +12,16 @@ class SingerSerializer(serializers.ModelSerializer):
         serializer = SongSerializer(instance.songs, many=True)
         return serializer.data
 
+    tag = serializers.SerializerMethodField()
+    def get_tag(self, instance):
+        tags = instance.tag.all()
+        return [tag.name for tag in tags]
+    
     class Meta:
         model = Singer
-        fields = ['id', 'content', 'debut', 'created_at', 'updated_at', 'songs']
+        fields = '__all__'
+    
+    image = serializers.ImageField(use_url=True, required=False)
 
 class SongSerializer(serializers.ModelSerializer):
 
@@ -23,3 +30,8 @@ class SongSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['singer']
 
+class TagSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=Tag
+        fields = '__all__'
